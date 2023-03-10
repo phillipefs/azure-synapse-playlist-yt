@@ -1,0 +1,20 @@
+{
+	"name": "Demo01_Serverless_Adls_File_Exploration",
+	"properties": {
+		"folder": {
+			"name": "SQLServeless"
+		},
+		"content": {
+			"query": "SELECT\n    TOP 100 *\nFROM\n    OPENROWSET(\n        BULK 'https://adlssynapsedeveloper.dfs.core.windows.net/raw/sales/sale-small-20190106-snappy.parquet',\n        FORMAT='PARQUET'\n    ) AS [result]\n\nSELECT\n    TransactionDate, ProductId,\n        CAST(SUM(ProfitAmount) AS decimal(18,2)) AS [(sum) Profit],\n        CAST(AVG(ProfitAmount) AS decimal(18,2)) AS [(avg) Profit],\n        SUM(Quantity) AS [(sum) Quantity]\nFROM\n    OPENROWSET(\n        BULK 'https://adlssynapsedeveloper.dfs.core.windows.net/raw/sales/sale-small-20190106-snappy.parquet',\n        FORMAT='PARQUET'\n    ) AS [r] GROUP BY r.TransactionDate, r.ProductId;\n\nSELECT\n    COUNT(*)\nFROM\n    OPENROWSET(\n        BULK 'https://adlssynapsedeveloper.dfs.core.windows.net/raw/sales/*',\n        FORMAT='PARQUET'\n    ) AS [r];\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"databaseName": "master",
+				"poolName": "Built-in"
+			},
+			"resultLimit": 5000
+		},
+		"type": "SqlQuery"
+	}
+}
